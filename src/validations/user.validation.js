@@ -94,80 +94,108 @@ const addUser = async (req, res, next) => {
         .send({ status: false, message: "Personal number already exist!" });
     }
 
-    if (!captcha) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter captcha!" });
-    }
-    if (!captchaHash) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter captcha hash!" });
-    }
+    // if (!captcha) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter captcha!" });
+    // }
+    // if (!captchaHash) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter captcha hash!" });
+    // }
 
-    const validateCaptch = await bcrypt.compare(
-      req.body.captcha,
-      req.body.captchaHash
-    );
+    // const validateCaptch = await bcrypt.compare(
+    //   req.body.captcha,
+    //   req.body.captchaHash
+    // );
 
-    if (!validateCaptch) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter valid Captcha!" });
-    }
+    // if (!validateCaptch) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter valid Captcha!" });
+    // }
 
     next();
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-const updateUser = async (req, res) => {
+
+const getUser = async (req, res) => {
   try {
     const data = req.body;
-    const {
-      userName,
-      cPwd,
-      password,
-      confirmPwd,
-      mobileNumber,
-      captcha,
-      captchaHash,
-    } = data;
-
-    // await User.create({
-    //   userName: userName,
-    //   roleId: roleId,
-    //   emailId: emailId,
-    //   personalNumber: personalNumber,
-    //   password: password ? bcrypt.hashSync(password, 8) : null,
-    //   organisation: organisation,
-    //   designation: designation,
-    //   mobileNumber: mobileNumber || null,
-    // });
-    // return res
-    //   .status(200)
-    //   .send({ status: true, message: "User updated sccessfully!" });
-    if (!captcha) {
+  } catch (error) {
+    res.status(500).send({ status: false, message: error.message });
+  }
+};
+const updateUser = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const { name, oldPassword, newPassword, cPassword, personalNumber } = data;
+    if (!name) {
       return res
         .status(400)
-        .send({ status: false, message: "Please enter captcha!" });
-    }
-    if (!captchaHash) {
+        .send({ status: false, message: "Please enter user name!" });
+    } else if (!oldPassword) {
       return res
         .status(400)
-        .send({ status: false, message: "Please enter captcha hash!" });
-    }
-
-    const validateCaptch = await bcrypt.compare(
-      req.body.captcha,
-      req.body.captchaHash
-    );
-
-    if (!validateCaptch) {
+        .send({ status: false, message: "Please enter current password!" });
+    } else if (!newPassword) {
       return res
         .status(400)
-        .send({ status: false, message: "Please enter valid Captcha!" });
+        .send({ status: false, message: "Please enter password!" });
+    } else if (!cPassword) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Please enter comfirm password!" });
+    } else if (!personalNumber) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Please enter personal number!" });
+    } else if (isNaN(personalNumber)) {
+      return res.status(400).send({
+        status: false,
+        message: "Please enter valid personal number!",
+      });
+    } else if (personalNumber.length != 10) {
+      return res.status(400).send({
+        status: false,
+        message: "Please enter 10 digits valid personal number!",
+      });
     }
+    const isPersonalNumberExist = await User.findOne({
+      where: {
+        personalNumber: personalNumber,
+      },
+    });
+    if (isPersonalNumberExist) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Personal number already exist!" });
+    }
+
+    // if (!captcha) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter captcha!" });
+    // }
+    // if (!captchaHash) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter captcha hash!" });
+    // }
+
+    // const validateCaptch = await bcrypt.compare(
+    //   req.body.captcha,
+    //   req.body.captchaHash
+    // );
+
+    // if (!validateCaptch) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter valid Captcha!" });
+    // }
 
     next();
   } catch (error) {

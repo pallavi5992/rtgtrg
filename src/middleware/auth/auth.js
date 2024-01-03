@@ -3,8 +3,11 @@ const User = db.user;
 const jwt = require("jsonwebtoken");
 
 const verifyToken = async (req, res, next) => {
+  console.log(req)
   try {
     const token = req.headers["x-access-token"];
+   // const token = req.headers["authorization"];
+    console.log(token,"tokenCCCCCCC")
     if (!token) {
       return res
         .status(401)
@@ -12,6 +15,7 @@ const verifyToken = async (req, res, next) => {
     }
 
     const tokenData = jwt.decode(token);
+    console.log(tokenData, "tokenData")
     if (!token) {
       return res.status(401).send({ status: false, message: "Unauthorized" });
     }
@@ -32,7 +36,7 @@ const verifyToken = async (req, res, next) => {
         if (err) {
           return res
             .status(401)
-            .send({ status: false, message: "Unauthorized" });
+            .send({ status: false, message: "Unauthorized 111" });
         }
         req.userId = decoded.id;
         next();

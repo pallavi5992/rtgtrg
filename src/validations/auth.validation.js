@@ -30,33 +30,33 @@ const login = async (req, res,next) => {
         .send({ status: false, message: "User not exist!" });
     }
     const isPassword =await bcrypt.compare(password,isUserExist?.password);
-    console.log(isPassword);
-    if(isPassword){
+    console.log(isPassword,"isPassword");
+    if(!isPassword){
         return res
         .status(400)
         .send({ status: false, message: "Invalid password!" });
     }
-    if (!captcha) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter captcha!" });
-    }
-    if (!captchaHash) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter captcha hash!" });
-    }
+    // if (!captcha) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter captcha!" });
+    // }
+    // if (!captchaHash) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter captcha hash!" });
+    // }
 
-    const validateCaptch = await bcrypt.compare(
-      req.body.captcha,
-      req.body.captchaHash
-    );
+    // const validateCaptch = await bcrypt.compare(
+    //   req.body.captcha,
+    //   req.body.captchaHash
+    // );
    
-    if (!validateCaptch) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter valid Captcha!" });
-    }
+    // if (!validateCaptch) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter valid Captcha!" });
+    // }
 
     next();
   } catch (error) {
