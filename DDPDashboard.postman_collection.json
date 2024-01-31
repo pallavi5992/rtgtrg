@@ -1,0 +1,1278 @@
+{
+	"info": {
+		"_postman_id": "6a617537-cdaa-4aa2-bf7d-349e56af1d9f",
+		"name": "DDPDashboard",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4413371"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "addUser",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    //    \"userName\":\"Admin User\",\r\n    //    \"roleId\":\"Admin\",\r\n    //    \"emailId\":\"pankaj21011kr@gmail.com\",\r\n    //    \"personalNumber\":\"9001112111\",\r\n    //    \"organisation\":\"1111\",\r\n    //    \"designation\":\"sss\",\r\n    //    \"password\":\"111\",\r\n    //    \"mobileNumber\":\"\"\r\n    \"Email_Id\": \"pallavik@yopmail.com\",\r\n    \"User_Name\": \"Pallvi\",\r\n    \"Password\": 123,\r\n    \"Organisation\": \"test pallavi\",\r\n    \"Designation\": \"abc\",\r\n    \"Mobile_No\": 9087654321,\r\n    \"UserType\": 1,\r\n    \"personalNumber\": \"122212333\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/user/add-user",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user",
+								"add-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "{{x-access-token}}",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"userName\":\"Pankj kumar\",\r\n   \"roleId\":\"Admin\",\r\n   \"emailId\":\"pankaj21011kr@gmail.com\",\r\n   \"personalNumber\":\"9001112111\",\r\n   \"organisation\":\"1111\",\r\n   \"designation\":\"sss\",\r\n   \"password\":\"111\",\r\n   \"mobileNumber\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/user/get-user/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user",
+								"get-user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllUser",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "{{x-access-token}}",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/user/get-alluser?page=1&size=2",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user",
+								"get-alluser"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserById",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "{{x-access-token}}",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"roleId\":2,\r\n    \"name\":\"Test abc\",\r\n    \"personalNumber\":\"9140901654\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/user/update-userid/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user",
+								"update-userid",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUserById",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoic3VwZXIgYWRtaW4iLCJpYXQiOjE3MDQyMjIzMjYsImV4cCI6MTcwNDIyMjM4Nn0.F6Z8k96OHVLRr1hBp2eWGR9tR68UB5DDpW22HI9u-MY",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/user/delete-user/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user",
+								"delete-user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateLoggedInUserDetails",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZUlkIjo1LCJyb2xlIjoiUmVzdHJpY3RlZCBVc2VyLW9mZnNldCAmIEFJIiwiaWF0IjoxNzA1NDkxMjg3LCJleHAiOjE3MDU0OTQ4ODd9.1M7yJiIJOFrLdt9EToQkinT9L6ORzXPIJE0cCF1INOU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"nehau test\",\r\n    \"oldPassword\": \"123456\",\r\n    \"newPassword\": \"123456\",\r\n    \"cPassword\": \"123456\",\r\n    \"personalNumber\": \"9045909111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/user/update-user-by-token/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user",
+								"update-user-by-token",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"emailId\": \"admin@yopmail.com\",\r\n   \"password\": \"12345\",\r\n     \"captcha\": \"iS4M6W\",\r\n     \"captchaHash\": \"$2b$10$sYnAVz.fXEn5INR5J4CHNutMpgEUonv8/EXIpaYlFR10mUj8ha3aW\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/auth/login",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgotPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"emailId\": \"pallaviraj5992@gmail.com\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/auth/forgotPassword",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"forgotPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "receive_new_password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \r\n    \"password\": \"3333\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/auth/receive_new_password/:userId/:token",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"receive_new_password",
+								":userId",
+								":token"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "1"
+								},
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjEsImlhdCI6MTcwNTU2NzI3NCwiZXhwIjoxNzA1NTcwODc0fQ.RRzjDqdURLiBh5E4sFs6jv5tYfTQI4vZ5W4Gj5HO8d8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userLogout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "{{x-access-token}}",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:4000/auth/logout",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "role",
+			"item": [
+				{
+					"name": "addRole",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "{{x-access-token}}",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\":\"Test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/role/add-role",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"role",
+								"add-role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all role",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "{{x-access-token}}",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:4000/role/get-all-role",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"role",
+								"get-all-role"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "captcha",
+			"item": [
+				{
+					"name": "get captcha",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4000/captcha/",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"captcha",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Production Performance",
+			"item": [
+				{
+					"name": "add-prPerformanceData",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{x-access-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"DPSU\": 2,\r\n    \"VOP\": 5000,\r\n    \"YearID\": 4,\r\n    \"Quarter\": 3,\r\n    \"Remarks\":\"test test second\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/productionPerformance/add-prPerformanceData",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"productionPerformance",
+								"add-prPerformanceData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allprPerformanceData",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2MDU0MjQsImV4cCI6MTcwNjYwOTAyNH0.xp159XDVHnv2j1TC2m5Rytw7YfM8VYUC2YtKgq-m2tA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"DPSU\": 1,\r\n    \"VOP\": 900,\r\n    \"YearID\": 4,\r\n    \"Quarter\": 2,\r\n    \"Remarks\":\"test test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/productionPerformance/getAll-prPerformanceData",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"productionPerformance",
+								"getAll-prPerformanceData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-prPerformanceById",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2MDU0MjQsImV4cCI6MTcwNjYwOTAyNH0.xp159XDVHnv2j1TC2m5Rytw7YfM8VYUC2YtKgq-m2tA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"DPSU\": 3,\r\n    \"VOP\": 700,\r\n    \"YearID\": 4,\r\n    \"Quarter\": 2,\r\n    \"Remarks\":\"test test update\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/productionPerformance//update-prPerformanceById/:ProductionID",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"productionPerformance",
+								"",
+								"update-prPerformanceById",
+								":ProductionID"
+							],
+							"variable": [
+								{
+									"key": "ProductionID",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get prPerformanceById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2MDU0MjQsImV4cCI6MTcwNjYwOTAyNH0.xp159XDVHnv2j1TC2m5Rytw7YfM8VYUC2YtKgq-m2tA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/productionPerformance/get-prPerformanceById/:ProductionID",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"productionPerformance",
+								"get-prPerformanceById",
+								":ProductionID"
+							],
+							"variable": [
+								{
+									"key": "ProductionID",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete prPerformanceById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2MDU0MjQsImV4cCI6MTcwNjYwOTAyNH0.xp159XDVHnv2j1TC2m5Rytw7YfM8VYUC2YtKgq-m2tA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/productionPerformance//delete-prPerformanceById/:ProductionID",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"productionPerformance",
+								"",
+								"delete-prPerformanceById",
+								":ProductionID"
+							],
+							"variable": [
+								{
+									"key": "ProductionID",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "count organisation",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2MDU0MjQsImV4cCI6MTcwNjYwOTAyNH0.xp159XDVHnv2j1TC2m5Rytw7YfM8VYUC2YtKgq-m2tA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/productionPerformance/count-organisation",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"productionPerformance",
+								"count-organisation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pieChartOrganisation",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2Nzc4NTAsImV4cCI6MTcwNjY4MTQ1MH0.Rh-GFGm6o0jlTmQqzD8kBhZB6lhAD61n9GqjJQmegmQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/productionPerformance/percentage-org",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"productionPerformance",
+								"percentage-org"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "percentage-organisation",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2NzM5MjIsImV4cCI6MTcwNjY3NzUyMn0.vw3zkYpOFoZ769CO_MsD2GfVuDNtPh_rz0FRPEjOm-s",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orgId\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/productionPerformance/percentage-organisation",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"productionPerformance",
+								"percentage-organisation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organisationCount",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2MDU0MjQsImV4cCI6MTcwNjYwOTAyNH0.xp159XDVHnv2j1TC2m5Rytw7YfM8VYUC2YtKgq-m2tA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/productionPerformance/organisation-count",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"productionPerformance",
+								"organisation-count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Organisation",
+			"item": [
+				{
+					"name": "add-organisation",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDYwMjk5NDAsImV4cCI6MTcwNjAzMzU0MH0.20vBGxgIuxHZki4rNCFOWCAuTCO0QJJQ0X11kwMBiMA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Code\": \"7 New OF Companies*\",\r\n    \"Name\": \"Erstwhile OFB\"\r\n   // \"PublicSector\": 1\r\n   // \"userId\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/organisation/add-organisation",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"organisation",
+								"add-organisation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AllOrganisation",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDYwMjc0ODIsImV4cCI6MTcwNjAzMTA4Mn0.Txp13-00ODpChFc_LXmtfJ1ejlMGUjj5LpjrbaGHx_0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:4000/organisation/getAll-organisation",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"organisation",
+								"getAll-organisation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrganisationDataById",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDYwMjc0ODIsImV4cCI6MTcwNjAzMTA4Mn0.Txp13-00ODpChFc_LXmtfJ1ejlMGUjj5LpjrbaGHx_0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:4000/organisation/get-organisation/:OrganisationID",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"organisation",
+								"get-organisation",
+								":OrganisationID"
+							],
+							"variable": [
+								{
+									"key": "OrganisationID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateOrganisationById",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDYwMjc0ODIsImV4cCI6MTcwNjAzMTA4Mn0.Txp13-00ODpChFc_LXmtfJ1ejlMGUjj5LpjrbaGHx_0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Code\": \"BEL\",\r\n    \"Name\": \"Bharat Electronics Limited\"\r\n   // \"PublicSector\": 1\r\n   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/organisation/Update-organisation/:OrganisationID",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"organisation",
+								"Update-organisation",
+								":OrganisationID"
+							],
+							"variable": [
+								{
+									"key": "OrganisationID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "FinancialYear",
+			"item": [
+				{
+					"name": "AllFinancialYear",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2ODA1NjIsImV4cCI6MTcwNjY4NDE2Mn0.Avx7gFff9o5UCNdiXkFJaow4xLU8td0MaQrhO7lwnLw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:4000/year/getAll-financialYear",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"year",
+								"getAll-financialYear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add FinancialYear",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2ODA1NjIsImV4cCI6MTcwNjY4NDE2Mn0.Avx7gFff9o5UCNdiXkFJaow4xLU8td0MaQrhO7lwnLw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Year\":\"757656\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/year/add-financialYear",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"year",
+								"add-financialYear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFinancialYearById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2ODA1NjIsImV4cCI6MTcwNjY4NDE2Mn0.Avx7gFff9o5UCNdiXkFJaow4xLU8td0MaQrhO7lwnLw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/year/get-financialYearByID/:yearID",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"year",
+								"get-financialYearByID",
+								":yearID"
+							],
+							"variable": [
+								{
+									"key": "yearID",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateFyYearData",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2ODA1NjIsImV4cCI6MTcwNjY4NDE2Mn0.Avx7gFff9o5UCNdiXkFJaow4xLU8td0MaQrhO7lwnLw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {  \"Year\":\"2024-2025\"\r\n }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/year/Update-financialYear/:yearID",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"year",
+								"Update-financialYear",
+								":yearID"
+							],
+							"variable": [
+								{
+									"key": "yearID",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete FyYearData",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2ODA1NjIsImV4cCI6MTcwNjY4NDE2Mn0.Avx7gFff9o5UCNdiXkFJaow4xLU8td0MaQrhO7lwnLw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/year/delete-fy/:yearID",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"year",
+								"delete-fy",
+								":yearID"
+							],
+							"variable": [
+								{
+									"key": "yearID",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "x-access-token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZUlkIjoxLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3MDY2MDQ1MjAsImV4cCI6MTcwNjYwODEyMH0.Yu3YU8Ldfmw0dApprwB8pVq3SkbXnh_6ufFhgS4mSsg",
+			"type": "string"
+		}
+	]
+}
