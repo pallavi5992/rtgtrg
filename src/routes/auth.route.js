@@ -6,5 +6,6 @@ const router=express.Router();
 
 router.post("/login",validation.login,controller.login);
 router.post("/logout",[auth.verifyToken],controller.logout);
-
+router.post("/forgotPassword",controller.forgotPassword);
+router.patch("/resetPasswordRequest/:token",controller.resetPasswordRequest);
 module.exports=router;

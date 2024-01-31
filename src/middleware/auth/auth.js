@@ -3,26 +3,23 @@ const User = db.user;
 const jwt = require("jsonwebtoken");
 
 const verifyToken = async (req, res, next) => {
-  console.log(req)
   try {
     const token = req.headers["x-access-token"];
-   // const token = req.headers["authorization"];
-    console.log(token,"tokenCCCCCCC")
     if (!token) {
+      console.log(!token);
       return res
         .status(401)
         .send({ status: false, message: "No token provided" });
     }
 
     const tokenData = jwt.decode(token);
-    console.log(tokenData, "tokenData")
     if (!token) {
       return res.status(401).send({ status: false, message: "Unauthorized" });
     }
 
     const user = await User.findOne({
       where: {
-        id: tokenData.id,
+        UserId: tokenData.id,
       },
     });
     if (!user) {
@@ -34,9 +31,10 @@ const verifyToken = async (req, res, next) => {
     if (user.accessToken == token) {
       jwt.verify(token, process.env.JWT_Secret_Key, (err, decoded) => {
         if (err) {
+          console.log(err)
           return res
             .status(401)
-            .send({ status: false, message: "Unauthorized 111" });
+            .send({ status: false, message: "Unauthorized b" });
         }
         req.userId = decoded.id;
         next();
@@ -47,10 +45,42 @@ const verifyToken = async (req, res, next) => {
         .send({ status: false, message: "User token not matched!" });
     }
   } catch (error) {
+    console.log(error);
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+const isSuperAdminAdmin = async (req, res, next) => {
+  try {
+    const token = req.headers["x-access-token"];
+    if (!token) {
+      console.log(!token);
+      return res.status(401).send({ status: false, message: "Access dennied" });
+    }
+    const tokenData = jwt.decode(token);
+    if (!token) {
+      return res.status(401).send({ status: false, message: "Unauthorized" });
+    }
+    const user = await User.findOne({
+      where: {
+        UserId: tokenData.id,
+      },
+    });
+    if (!user) {
+      return res
+        .status(401)
+        .send({ status: false, message: "Unauthorized user" });
+    }
+    if (tokenData.role != "SuperAdmin" && tokenData.role != "Admin") {
+      return res.status(400).send({ status: false, message: "Access dennied" });
+    }
+    next();
+  } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
 
 module.exports = {
   verifyToken,
+  isSuperAdminAdmin,
 };

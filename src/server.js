@@ -4,9 +4,7 @@ const routes=require("./routes")
 const db=require("./models")
 const app=express();
 require("dotenv").config();
-const options ={
-    
-}
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
@@ -17,7 +15,7 @@ global.__basedir=__dirname;
 
 db.sequelize.sync().then(()=>{
     console.log("DB connected successfully")
-}).catch((err)=>{
+}).catch((err)=>{  
     console.log(err.message);
 });
 

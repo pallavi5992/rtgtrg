@@ -1,11 +1,13 @@
 const db = require("../models");
-const Role = db.role;
+const Roles = db.role;
 
 exports.addRole = async (req, res) => {
   try {
-    await Role.create({
-      role: req.body.role,
-      status:req.body.status||"1"
+    await Roles.create({
+      Role: req.body.Role,
+      isActive:req.body.isActive||"1",
+      CreatedBy:req.body.CreatedBy||1,
+      CreatedOn:new Date()
     });
     return res
       .status(200)
@@ -19,9 +21,9 @@ exports.addRole = async (req, res) => {
 
 exports.getAllRole=async(req,res)=>{
     try {
-        const result=await Role.findAll({
+        const result=await Roles.findAll({
             where:{
-                status:"1"
+                isActive:"1"
             }
         });
         if(result.length==0){

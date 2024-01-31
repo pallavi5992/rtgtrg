@@ -6,6 +6,17 @@ const bcrypt = require("bcryptjs");
 const login = async (req, res,next) => {
   try {
     const { emailId, password,captcha,captchaHash } = req.body;
+    const validateCaptch = await bcrypt.compare(
+      req.body.captcha,
+      req.body.captchaHash
+    );
+ 
+
+    if (!validateCaptch) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Please enter valid Captcha!" });
+    }
     if (!emailId) {
       return res
         .status(400)
@@ -21,7 +32,7 @@ const login = async (req, res,next) => {
     }
     const isUserExist = await User.findOne({
       where: {
-        emailId: emailId,
+        Email_Id: emailId,
       },
     });
     if(!isUserExist){
@@ -29,34 +40,25 @@ const login = async (req, res,next) => {
         .status(400)
         .send({ status: false, message: "User not exist!" });
     }
-    const isPassword =await bcrypt.compare(password,isUserExist?.password);
-    console.log(isPassword,"isPassword");
+    const isPassword =await bcrypt.compare(password,isUserExist?.Password);
+    console.log(isPassword);
     if(!isPassword){
         return res
         .status(400)
         .send({ status: false, message: "Invalid password!" });
     }
-    // if (!captcha) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: "Please enter captcha!" });
-    // }
-    // if (!captchaHash) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: "Please enter captcha hash!" });
-    // }
+    if (!captcha) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Please enter captcha!" });
+    }
+    if (!captchaHash) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Please enter captcha hash!" });
+    }
 
-    // const validateCaptch = await bcrypt.compare(
-    //   req.body.captcha,
-    //   req.body.captchaHash
-    // );
-   
-    // if (!validateCaptch) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: "Please enter valid Captcha!" });
-    // }
+    
 
     next();
   } catch (error) {
@@ -68,5 +70,4 @@ const login = async (req, res,next) => {
 
 module.exports={
     login,
-  
 }

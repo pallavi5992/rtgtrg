@@ -5,6 +5,7 @@ exports.sequelize=new Sequelize(process.env.DB,process.env.USER,process.env.PASS
     host:process.env.HOST,
     dialect:process.env.DIALECT,
     operatorsAliases:0,
+    
 
     pool:{
         max:5,

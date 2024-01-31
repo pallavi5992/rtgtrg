@@ -1,78 +1,109 @@
+const crypto = require('crypto');
 
 module.exports = (sequelize, Sequelize, DataTypes) => {
     const User = sequelize.define("ddpdashboard_users", {
-        id: {
+        UserId: {
             type:Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement:true
         },
-        userName: {  
+        Email_Id:{
             type: DataTypes.TEXT,
             allowNull: false,
-
         },
-        roleId:{
+        User_Name: {  
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        Password:{
+            type: DataTypes.TEXT,
+            allowNull: false,
+        },
+
+        PasswordChangeAt:{
+            type:DataTypes.DATE,
+            allowNull:true
+        },
+        PasswordResetToken:{
+            type:DataTypes.STRING,
+            allowNull:true
+        },
+        PasswordResetTokenExpire:{
+            type:DataTypes.DATE,
+            allowNull:true
+        },
+
+        Mobile_No:{
+            type:Sequelize.STRING,
+            allowNull:false
+        },
+        ModifiedOn:{
+            type:DataTypes.DATE,
+            allowNull:false
+        },
+        Deleted:{
+            type:Sequelize.ENUM("0","1"),
+            comment:"0-deleted,1-notDeleted",
+            allowNull:true
+        },
+        ModifiedBy:{
             type:DataTypes.INTEGER,
             allowNull:false
         },
-        emailId:{
-            type: DataTypes.TEXT,
-            allowNull: false,
+
+        UserType:{
+            type:DataTypes.INTEGER,
+            allowNull:false
         },
         personalNumber:{
             type:Sequelize.STRING,
-            allowNull:false
+            allowNull:true
+        },
+        MobileOTP:{
+            type:DataTypes.STRING,
+            allowNull:true
         },
         accessToken:{
             type:Sequelize.TEXT,
             allowNull:true
         },
-        mobileNumber:{
-            type:Sequelize.STRING,
-            allowNull:true
-        },
-        password:{
-            type: DataTypes.TEXT,
-            allowNull: false,
-        },
-        address:{
-            type:Sequelize.TEXT,
-            allowNull:true
-        },
-        organisation:{
-            type:Sequelize.STRING,
-            allowNull:true
-        },
-        designation:{
-            type:Sequelize.STRING,
-            allowNull:true
-        },
-        deleted:{
-            type:Sequelize.ENUM("0","1"),
-            comment:"0-notDeleted,1-deleted",
-            allowNull:true
-        },
-       
-        mobileOTP:{
+        VerifyOTP:{
             type:DataTypes.STRING,
             allowNull:true
         },
-        verifyOTP:{
-            type:DataTypes.STRING,
+        Organisation:{
+            type:Sequelize.STRING,
             allowNull:true
         },
-        loginFailedCount:{
+        Designation:{
+            type:Sequelize.STRING,
+            allowNull:true
+        },
+      
+        LoginFailedCount:{
             type:DataTypes.INTEGER,
             allowNull:true
         },
-        loginFailedDate:{
+        LoginFailedDate:{
             type:DataTypes.DATE,
             allowNull:true
         },
-        emialLinkOTP:{
+        EmailLinkOTP:{
             type:DataTypes.STRING,
             allowNull:true
         }
+    
     }) 
-    return User
+
+    User.prototype.createResetPasswordToken = function () {
+
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        this.PasswordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        this.PasswordResetTokenExpire = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
+    };
+
+    return User;
 }
+

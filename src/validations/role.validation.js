@@ -1,26 +1,25 @@
 const db = require("../models");
 const User = db.user;
-const Role = db.role;
+const Roles = db.role;
 
 const addRole = async (req, res, next) => {
   try {
-    const data = req.body;
-    const { role, status } = data;
-    if (!role) {
+    const {Role, isActive } = req.body;
+    if (!Role) {
       return res
         .status(400)
         .send({ status: false, message: "Please enter role" });
     }
-    if (status) {
-      if (status != "0" && status != "1") {
+    if (isActive) {
+      if (isActive != "0" && isActive != "1") {
         return res
           .status(400)
           .send({ status: false, message: "Please enter valid status" });
       }
     }
-    const isRoleExist = await Role.findOne({
+    const isRoleExist = await Roles.findOne({
       where: {
-        role: role,
+        Role: Role,
       },
     });
     if (isRoleExist) {

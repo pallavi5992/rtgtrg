@@ -3,60 +3,60 @@ const User = db.user;
 const Role = db.role;
 const { default: isEmail } = require("validator/lib/isEmail");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const addUser = async (req, res, next) => {
   try {
-    const data = req.body;
     const {
-      userName,
-      roleId,
-      emailId,
-      personalNumber,
-      password,
-      organisation,
-      designation,
-      mobileNumber,
+      Email_Id,
+      User_Name,
+      Password,
+      Organisation,
+      Designation,
       captcha,
       captchaHash,
-    } = data;
-    if (!roleId) {
+      Mobile_No,
+      ModifiedBy,
+      UserType,
+    } = req.body;
+    if (!UserType) {
       return res
         .status(400)
-        .send({ status: false, message: "Please select user role!" });
-    } else if (!userName) {
+        .send({ status: false, message: "Please select user type!" });
+    } else if (!User_Name) {
       return res
         .status(400)
         .send({ status: false, message: "Please enter name!" });
-    } else if (!emailId) {
+    } else if (!Email_Id) {
       return res
         .status(400)
         .send({ status: false, message: "Please enter email address!" });
-    } else if (!isEmail(emailId)) {
+    } else if (!isEmail(Email_Id)) {
       return res
         .status(400)
         .send({ status: false, message: "Please enter email address!" });
-    } else if (!personalNumber) {
+    } else if (!Mobile_No) {
       return res
         .status(400)
-        .send({ status: false, message: "Please enter personal number!" });
-    } else if (isNaN(personalNumber)) {
+        .send({ status: false, message: "Please enter mobile number!" });
+    } else if (isNaN(Mobile_No)) {
       return res.status(400).send({
         status: false,
-        message: "Please enter valid personal number!",
+        message: "Please enter valid mobile number!",
       });
-    } else if (personalNumber.length != 10) {
+    } else if (Mobile_No.length != 10) {
       return res.status(400).send({
         status: false,
-        message: "Please enter 10 digits valid personal number!",
+        message: "Please enter 10 digits valid mobile number!",
       });
-    } else if (!organisation) {
+    } else if (!Organisation) {
       return res
         .status(400)
         .send({ status: false, message: "Please enter organisation name!" });
-    } else if (!designation) {
+    } else if (!Designation) {
       return res
         .status(400)
         .send({ status: false, message: "Please enter designation name!" });
-    } else if (!password) {
+    } else if (!Password) {
       return res
         .status(400)
         .send({ status: false, message: "Please enter password!" });
@@ -64,18 +64,18 @@ const addUser = async (req, res, next) => {
 
     const isRoleExist = await Role.findOne({
       where: {
-        id: roleId,
+        Role: UserType,
       },
     });
     if (!isRoleExist) {
       return res
         .status(400)
-        .send({ status: false, message: "Role does not exist!" });
+        .send({ status: false, message: "Invalid user type!" });
     }
 
     const isEmailExist = await User.findOne({
       where: {
-        emailId: emailId,
+        Email_Id: Email_Id,
       },
     });
     if (isEmailExist) {
@@ -85,13 +85,13 @@ const addUser = async (req, res, next) => {
     }
     const isPersonalNumberExist = await User.findOne({
       where: {
-        personalNumber: personalNumber,
+        Mobile_No: Mobile_No,
       },
     });
     if (isPersonalNumberExist) {
       return res
         .status(400)
-        .send({ status: false, message: "Personal number already exist!" });
+        .send({ status: false, message: "Mobile number already taken!" });
     }
 
     // if (!captcha) {
@@ -121,88 +121,181 @@ const addUser = async (req, res, next) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-
-const getUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   try {
-    const data = req.body;
-  } catch (error) {
-    res.status(500).send({ status: false, message: error.message });
-  }
-};
-const updateUser = async (req, res, next) => {
-  try {
-    const data = req.body;
-    const { name, oldPassword, newPassword, cPassword, personalNumber } = data;
-    if (!name) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter user name!" });
-    } else if (!oldPassword) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter current password!" });
-    } else if (!newPassword) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter password!" });
-    } else if (!cPassword) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter comfirm password!" });
-    } else if (!personalNumber) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter personal number!" });
-    } else if (isNaN(personalNumber)) {
-      return res.status(400).send({
-        status: false,
-        message: "Please enter valid personal number!",
-      });
-    } else if (personalNumber.length != 10) {
-      return res.status(400).send({
-        status: false,
-        message: "Please enter 10 digits valid personal number!",
-      });
-    }
-    const isPersonalNumberExist = await User.findOne({
+    const userId = req.query.id;
+    const user = await User.findOne({
       where: {
-        personalNumber: personalNumber,
+        UserId: userId,
+        Deleted: "0",
       },
     });
-    if (isPersonalNumberExist) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Personal number already exist!" });
+    if (user) {
+      return res.status(400).send({ status: false, message: "User not found" });
     }
-
-    // if (!captcha) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: "Please enter captcha!" });
-    // }
-    // if (!captchaHash) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: "Please enter captcha hash!" });
-    // }
-
-    // const validateCaptch = await bcrypt.compare(
-    //   req.body.captcha,
-    //   req.body.captchaHash
-    // );
-
-    // if (!validateCaptch) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: "Please enter valid Captcha!" });
-    // }
-
     next();
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
+const updateUserByToken = async (req, res,next) => {
+  try {
+    const {
+      Designation,
+      Organisation,
+      captcha,
+      Mobile_No,
+      captchaHash,
+      oldPassword,
+      newPassword,
+      confirmPassword,
+    } = req.body;
+    const token = req.headers["x-access-token"];
+    const decodeToken = jwt.decode(token);
+    const userId = decodeToken.id;
+    const user = await User.findOne({
+      where: {
+        UserId: userId,
+      },
+    });
+    if(!captcha){
+      return res
+      .status(400)
+      .send({ status: false, message: "Please enter captcha!" });
+    }
+    const validateCaptch = await bcrypt.compare(captcha,captchaHash);
+    if (!validateCaptch) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Please enter valid Captcha!" });
+    }
+    if (!user) {
+      return res.status(400).send({ status: false, message: "User not found" });
+    }
+    if(newPassword){
+      if(!oldPassword){
+        return res.status(400).send({ status: false, message: "Please enter old password" });
+      }
+      else if(!newPassword){
+        return res.status(400).send({ status: false, message: "Please enter old password" });
+      }
+      else if(!confirmPassword){
+        return res.status(400).send({ status: false, message: "Please enter old password" });
+      }
+      else if(newPassword!=confirmPassword){
+        return res.status(400).send({ status: false, message: "Please enter old password" });
+      };
+      const isOldPassword =await bcrypt.compare(oldPassword,user?.Password);
+      console.log(isOldPassword,"sssssssssss");
+      if(!isOldPassword){
+        return res
+        .status(400)
+        .send({ status: false, message: "Invalid old password!" });
+      }
+    };
+    if(Mobile_No){
+       if (isNaN(Mobile_No)) {
+        return res.status(400).send({
+          status: false,
+          message: "Please enter valid mobile number!",
+        });
+      } else if (Mobile_No.length != 10) {
+        return res.status(400).send({
+          status: false,
+          message: "Please enter 10 digits valid mobile number!",
+        });
+      }
+      const isMobileNumberExist=await User.findOne({
+        where:{
+          Mobile_No:Mobile_No
+        }
+      })
+      if(isMobileNumberExist){
+        if(isMobileNumberExist.UserId!=userId){
+          return res.status(400).send({
+            status: false,
+            message: "Mobile number already taken!",
+          });
+        }
+      }
+    }
+    next();
+   
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+const updateUserById = async (req, res,next) => {
+  try {
+    const {
+      captcha,
+      Mobile_No,
+      captchaHash,
+    } = req.body;
+    const userId=req.query.userId
+   
+    if(!userId){
+      return res
+      .status(400)
+      .send({ status: false, message: "Please enter userId!" });
+    }
+    const user = await User.findOne({
+      where: {
+        UserId: userId,
+      },
+    });
+    if(!captcha){
+      return res
+      .status(400)
+      .send({ status: false, message: "Please enter captcha!" });
+    }
+    const validateCaptch = await bcrypt.compare(captcha,captchaHash);
+    if (!validateCaptch) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Please enter valid Captcha!" });
+    }
+    if (!user) {
+      return res.status(400).send({ status: false, message: "User not found" });
+    };
+   
+    if(Mobile_No){
+       if (isNaN(Mobile_No)) {
+        return res.status(400).send({
+          status: false,
+          message: "Please enter valid mobile number!",
+        });
+      } else if (Mobile_No.length != 10) {
+        return res.status(400).send({
+          status: false,
+          message: "Please enter 10 digits valid mobile number!",
+        });
+      }
+      const isMobileNumberExist=await User.findOne({
+        where:{
+          Mobile_No:Mobile_No
+        }
+      })
+      if(isMobileNumberExist){
+        if(isMobileNumberExist.UserId!=userId){
+          return res.status(400).send({
+            status: false,
+            message: "Mobile number already taken!",
+          });
+        }
+      }
+    }
+    next();
+   
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
 module.exports = {
   addUser,
-  updateUser,
+  deleteUser,
+  updateUserByToken,
+  updateUserById
 };

@@ -1,31 +1,45 @@
 const db = require("../models");
 const User = db.user;
+const Role = db.role;
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const helper = require("../helper/helper");
+const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
+
+
+
+
 const addUser = async (req, res) => {
   try {
-    const data = req.body;
     const {
-      userName,
-      roleId,
-      emailId,
+      Email_Id,
+      User_Name,
+      Password,
+      Organisation,
+      Designation,
+      Mobile_No,
+      ModifiedBy,
+      UserType,
       personalNumber,
-      password,
-      organisation,
-      designation,
-      mobileNumber,
-    } = data;
+    } = req.body;
+    const isRoleId = await Role.findOne({
+      where: {
+        Role: UserType,
+      },
+    });
 
     await User.create({
-      userName: userName,
-      roleId: roleId,
-      emailId: emailId,
+      User_Name: User_Name,
+      UserType: isRoleId?.RoleId,
+      Email_Id: Email_Id,
       personalNumber: personalNumber,
-      password: password ? bcrypt.hashSync(password, 8) : null,
-      organisation: organisation,
-      designation: designation,
-      mobileNumber: mobileNumber || null,
+      Password: Password ? bcrypt.hashSync(Password, 8) : null,
+      Organisation: Organisation,
+      Designation: Designation,
+      Mobile_No: Mobile_No || null,
+      ModifiedOn: new Date(),
+      ModifiedBy: ModifiedBy ? ModifiedBy : 1,
+      Deleted: "1",
     });
     return res
       .status(200)
@@ -35,97 +49,395 @@ const addUser = async (req, res) => {
   }
 };
 
-const getLoggedInUser = async (req, res) => {
-  console.log(req.params.userid);
-  try {
-    const data = req.body;
-    const userid = req.params.userid;
-    const loginUserId = req.user.uid;
-    const userDetail = await User.findOne({
-      where: {
-        id: userid,
-      },
-    });
-    console.log(userDetail);
-    res.status(200).send({});
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
+const getAllUserData = async (req, res) => {
+  const userData = [];
 
-const updateUser = async (req, res) => {
-  try {
-    const token = req.headers["x-access-token"];
-    const tokenData = jwt.decode(token);
-    const data = req.body;
-    const { name, oldPassword, newPassword, cPassword, personalNumber } = data;
-    const user = await User.findOne({
-      where: {
-        id: tokenData.id,
-      },
-    });
-    if (!user) {
-      return res.status(401).send({ status: false, message: "Unauthorized" });
-    }
+  
 
-    const validateCurrentPwd = await bcrypt.compare(
-      oldPassword,
-      user?.password
-    );
-    if (!validateCurrentPwd) {
-      return res.status(400).send({
-        status: false,
-        message: "Please enter valid current password!",
+  const users = await User.findAll({
+    where: {
+      Deleted: "1",
+    },
+    attributes: [
+      "UserId",
+      "User_Name",
+      "Email_Id",
+      "Mobile_No",
+      "Designation",
+      "Organisation",
+      "UserType",
+      "personalNumber",
+    ],
+  });
+
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].UserId != req.userId) {
+      userData.push({
+        id: users[i].UserId,
+        userName: users[i].User_Name,
+        emailId: users[i].Email_Id,
+        mobileNo: users[i].Mobile_No,
+        designation: users[i].Designation || "",
+        organisation: users[i].Organisation || "",
+        role: users[i].UserType ? await helper.getRole(users[i].UserType) : "",
+        personalNumber: users[i].personalNumber || "",
+        moduleName:users[i].UserType ? await helper.getRole(users[i].UserType)=="Super Admin"|| await helper.getRole(users[i].UserType)=="Module Admin"?["All"]: await helper.userModuleAssign(users[i].UserId):"",
       });
     }
-    if( newPassword!== cPassword){
-        return res.status(400).send({
-            status: false,
-            message: "Not matching!",
-          });
-    }
+  }
+
+  const page = parseInt(req.query.page) || 0;
+  const limit = req.query.limit || 10;
+  const startIndex = page * limit;
+  const endIndex = (page + 1) * limit;
+  const result = {};
+  result.dataItems = userData.slice(startIndex, endIndex);
+  result.totalItems = userData.length;
+  result.totalPage = Math.ceil(userData.length / limit);
+  result.currentPage = page;
+
+  if (result.dataItems.length == 0) {
+    return res
+      .status(200)
+      .send({ status: false, message: "Data not found", data: result });
+  }
+
+  return res
+    .status(200)
+    .send({ status: true, message: "Data found", data: result });
+};
+
+const updateUserByToken = async (req, res) => {
+  try {
+    const {
+      useName,
+      Designation,
+      Organisation,
+      Mobile_No,
+      newPassword,
+      personalNumber,
+    } = req.body;
+    const token = req.headers["x-access-token"];
+    const decodeToken = jwt.decode(token);
+    const userId = decodeToken.id;
+    const user = await User.findOne({
+      where: {
+        UserId: userId,
+      },
+    });
     await User.update(
       {
-        userName: name,
-        password: newPassword ? bcrypt.hashSync(newPassword, 8) : null,
-        personalNumber: personalNumber,
+        User_Name: useName ? useName : user.User_Name,
+        Designation: Designation ? Designation : user.Designation,
+        Organisation: Organisation ? Organisation : user.Organisation,
+        Mobile_No: Mobile_No ? Mobile_No : user.Mobile_No,
+        personalNumber: personalNumber ? personalNumber : user.personalNumber,
+        Password: newPassword ? bcrypt.hashSync(newPassword, 8) : user.Password,
       },
       {
-        where: { emailId: user.emailId },
+        where: {
+          UserId: userId,
+        },
       }
     );
     return res
       .status(200)
-      .send({ status: true, message: "User was updated successfully" });
+      .send({ status: true, message: "User Updated successfully" });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-// app.post("/home", function (req, res) {
-//   if (req.session.user == null) {
-//     res.redirect("/");
-//   } else {
-//     accounts.updateAccount(
-//       {
-//         id: req.session.user._id,
-//         name: req.body["name"],
-//         email: req.body["email"],
-//         pass: req.body["pass"],
-//         country: req.body["country"],
-//       },
-//       function (e, o) {
-//         if (e) {
-//           res.status(400).send("error-updating-account");
-//         } else {
-//           req.session.user = o.value;
-//           res.status(200).send("ok");
-//         }
-//       }
-//     );
-//   }
-// });
+
+const getUserByToken = async (req, res) => {
+  try {
+    const token = req.headers["x-access-token"];
+    const decodeToken = jwt.decode(token);
+    const userId = decodeToken.id;
+    const user = await User.findOne({
+      where: {
+        UserId: userId,
+      },
+      attributes: [
+        "User_Name",
+        "Email_Id",
+        "Mobile_No",
+        "UserType",
+        "personalNumber",
+        "Organisation",
+        "Designation",
+      ],
+    });
+    if (!user) {
+      return res
+        .status(400)
+        .send({ status: false, message: "User not found", data: user });
+    }
+    const data = {
+      role: await helper.getRole(user.UserType),
+      userName: user.User_Name,
+      email: user.Email_Id,
+      mobileNo: user?.Mobile_No || "",
+      personalNumber: user?.personalNumber || "",
+      organisation: user?.Organisation || "",
+      designation: user.Designation || "",
+    };
+    return res
+      .status(200)
+      .send({ status: true, message: "User found successfully", data: data });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+const getUserById = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    if (!userId) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Please enter userId" });
+    }
+    const user = await User.findOne({
+      where: {
+        UserId: userId,
+      },
+      attributes: [
+        "User_Name",
+        "Email_Id",
+        "Mobile_No",
+        "UserType",
+        "personalNumber",
+        "Organisation",
+        "Designation",
+      ],
+    });
+    if (!user) {
+      return res.status(400).send({
+        status: false,
+        message: "User not found",
+        data: user ? user : "",
+      });
+    }
+    const data = {
+      role: await helper.getRoleforLogin(user.UserType),
+      userName: user.User_Name,
+      email: user.Email_Id,
+      mobileNo: user?.Mobile_No || "",
+      personalNumber: user?.personalNumber || "",
+      organisation: user?.Organisation || "",
+      designation: user.Designation || "",
+    };
+    return res
+      .status(200)
+      .send({ status: true, message: "User found successfully", data: data });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+const updateUserById = async (req, res) => {
+  try {
+    const {
+      role,
+      useName,
+      Designation,
+      Organisation,
+      Mobile_No,
+      personalNumber,
+    } = req.body;
+    const userId = req.query.userId;
+    const logInUserId = req.userId;
+    const isRole = await Role.findOne({
+      where: {
+        Role: role,
+      },
+    });
+    const user = await User.findOne({
+      where: {
+        UserId: userId,
+      },
+    });
+    await User.update(
+      {
+        UserType: role ? isRole?.RoleId : user?.RoleId,
+        User_Name: useName ? useName : user.User_Name,
+        Designation: Designation ? Designation : user.Designation,
+        Organisation: Organisation ? Organisation : user.Organisation,
+        Mobile_No: Mobile_No ? Mobile_No : user.Mobile_No,
+        personalNumber: personalNumber ? personalNumber : user.personalNumber,
+        ModifiedBy: logInUserId,
+      },
+      {
+        where: {
+          UserId: userId,
+        },
+      }
+    );
+    return res
+      .status(200)
+      .send({ status: true, message: "User Updated successfully" });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const userId = req.query.id;
+    await User.update(
+      {
+        Deleted: "0",
+      },
+      {
+        where: {
+          UserId: userId,
+        },
+      }
+    );
+    return res
+      .status(200)
+      .send({ status: true, message: "User deleted successfully" });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+const getAllUserNameId = async (req, res) => {
+  try {
+    const IsSuperAdminRole = await Role.findOne({
+      where: {
+        Role: "SuperAdmin",
+      },
+    });
+    const IsAdminRole = await Role.findOne({
+      where: {
+        Role: "Admin",
+      },
+    });
+    const user = await User.findAll({
+      where: {
+        Deleted: "1",
+        UserType:{
+          [Op.notIn]: [IsSuperAdminRole?.RoleId, IsAdminRole?.RoleId],
+        }
+      },
+      attributes: ["UserId", "User_Name"],
+      order:[["UserId","DESC"]]
+    });
+
+    return res
+      .status(200)
+      .send({ status: true, message: "User found successfully", data: user });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+const searchUser = async (req, res) => {
+  try {
+    const { key } = req.params;
+    console.log(key);
+    const AllData = [];
+    const role = await Role.findOne({
+      where: {
+        [Op.or]: [{ Role: { [Op.like]: `%${key}%` } }],
+      },
+    });
+
+    if (role) {
+      const userData = await User.findAll({
+        where: {
+          UserType: role.RoleId,
+        },
+        attributes: [
+          "User_Name",
+          "Email_Id",
+          "Mobile_No",
+          "Designation",
+          "Organisation",
+          "personalNumber",
+          "UserType",
+          "UserId"
+        ],
+      });
+
+      for (let i = 0; i < userData.length; i++) {
+        if (userData.length > 0) {
+           AllData.push({
+            id: userData[i].UserId,
+            userName: userData[i].User_Name,
+            emailId: userData[i].Email_Id,
+            mobileNo: userData[i].Mobile_No,
+            designation: userData[i].Designation || "",
+            organisation: userData[i].Organisation || "",
+            personalNumber: userData[i].personalNumber || "",
+            role: userData[i].UserType
+              ? await helper.getRole(userData[i].UserType)
+              : "",
+              moduleName:userData[i].UserType ? await helper.getRole(userData[i].UserType)=="Super Admin"|| await helper.getRole(userData[i].UserType)=="Module Admin"?["All"]: await helper.userModuleAssign(userData[i].UserId):"",
+          });
+        }
+      };
+      return res
+        .status(200)
+        .send({ status: true, message: "Data found ", data: AllData });
+    } else {
+      const userData = await User.findAll({
+        attributes: [
+          "User_Name",
+          "Email_Id",
+          "Mobile_No",
+          "Designation",
+          "Organisation",
+          "personalNumber",
+          "UserType",
+          "UserId"
+        ],
+        where: {
+          [Op.or]: [
+            { User_Name: { [Op.like]: `%${key}%` } },
+            { Email_Id: { [Op.like]: `%${key}%` } },
+            { Mobile_No: { [Op.like]: `%${key}%` } },
+            { Designation: { [Op.like]: `%${key}%` } },
+            { Organisation: { [Op.like]: `%${key}%` } },
+            { personalNumber: { [Op.like]: `%${key}%` } },
+          ],
+        },
+      });
+
+      for (let i = 0; i < userData.length; i++) {
+        if (userData.length > 0) {
+          AllData.push({
+            id: userData[i].UserId,
+            userName: userData[i].User_Name,
+            emailId: userData[i].Email_Id,
+            mobileNo: userData[i].Mobile_No,
+            designation: userData[i].Designation || "",
+            organisation: userData[i].Organisation || "",
+            personalNumber: userData[i].personalNumber || "",
+            role: userData[i].UserType
+              ? await helper.getRole(userData[i].UserType)
+              : "",
+              moduleName:userData[i].UserType ? await helper.getRole(userData[i].UserType)=="Super Admin"|| await helper.getRole(userData[i].UserType)=="Module Admin"?["All"]: await helper.userModuleAssign(userData[i].UserId):"",
+          });
+        }
+      }
+      return res
+        .status(200)
+        .send({ status: true, message: "Data found ", data: AllData });
+    }
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
 module.exports = {
   addUser,
-  getLoggedInUser,
-  updateUser,
+  getAllUserData,
+  deleteUser,
+  updateUserByToken,
+  getUserByToken,
+  getUserById,
+  updateUserById,
+  getAllUserNameId,
+  searchUser
 };
