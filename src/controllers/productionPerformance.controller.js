@@ -1,5 +1,8 @@
 const db = require("../models");
 const sequelize = require("sequelize");
+const bcrypt = require("bcryptjs");
+const helper = require("../helper/helper");
+const jwt = require("jsonwebtoken");
 const Organisation = db.organisation;
 const prPerformance = db.prProduction;
 const Year = db.tblYear;
@@ -7,16 +10,18 @@ const pagination = require("../helper/pagination");
 
 const addprPerformanceData = async (req, res) => {
   try {
-    const { DPSU, VOP, YearID, Quarter, Remarks } = req.body;
-    //const userId = req.userId;
+    const token = req.headers["x-access-token"];
+    const decodeToken = jwt.decode(token);
+    const userId = decodeToken.id;
+    const { OrganisationID, VOP, YearID, Quarter, Remarks } = req.body;
     await prPerformance.create({
-      DPSU: DPSU,
+      OrganisationID: OrganisationID,
       VOP: VOP,
       YearID: YearID,
       Quarter: Quarter,
       Remarks: Remarks,
       Deleted: "1",
-      // ModifiedBy: userId,
+       ModifiedBy: userId,
     });
     return res.status(200).send({
       status: true,
@@ -35,7 +40,7 @@ const getAllprPerformanceData = async (req, res) => {
         Deleted: "1",
       },
       order: [
-        ["ProductionID", "DESC"], // Sorts by COLUMN_NAME_EXAMPLE in ascending order
+        ["ProductionID", "DESC"], // Sorts by COLUMN in ascending order
       ],
       include: [
         {
@@ -54,7 +59,7 @@ const getAllprPerformanceData = async (req, res) => {
 
       attributes: [
         "ProductionID",
-        "DPSU",
+        "OrganisationID",
         "VOP",
         "Quarter",
         "Remarks",
@@ -84,7 +89,6 @@ const getAllprPerformanceData = async (req, res) => {
 };
 
 const getprPerformanceById = async (req, res) => {
-  console.log(req.params, "req.params");
   try {
     const { ProductionID } = req.params;
     if (!ProductionID) {
@@ -96,7 +100,21 @@ const getprPerformanceById = async (req, res) => {
       where: {
         ProductionID: ProductionID,
       },
-      attributes: ["DPSU", "VOP", "YearID", "Quarter", "Remarks"],
+      include: [
+        {
+          model: Year,
+          required: true,
+          attributes: ["YearID", "Year"],
+          as: "Year",
+        },
+        {
+          model: Organisation,
+          required: true,
+          attributes: ["OrganisationID", "Name"],
+          as: "OrganisationName",
+        },
+      ],
+      attributes: ["OrganisationID", "VOP", "YearID", "Quarter", "Remarks"],
     });
 
     if (!prProd) {
@@ -117,8 +135,11 @@ const getprPerformanceById = async (req, res) => {
 
 const updateprPerformanceById = async (req, res) => {
   try {
+    const token = req.headers["x-access-token"];
+    const decodeToken = jwt.decode(token);
+    const userId = decodeToken.id;
     const { ProductionID } = req.params;
-    const { DPSU, VOP, Quarter, Remarks, ModifiedBy } = req.body;
+    const { OrganisationID, VOP, Quarter, Remarks } = req.body;
     if (!ProductionID) {
       return res
         .status(400)
@@ -137,7 +158,7 @@ const updateprPerformanceById = async (req, res) => {
     }
 
     await prPerformance.update(
-      { DPSU, VOP, Quarter, Remarks, ModifiedBy },
+      { OrganisationID, VOP, Quarter, Remarks, ModifiedBy:userId },
       { where: { ProductionID } }
     );
 
@@ -293,18 +314,26 @@ const pieChartOrganisation = async (req, res) => {
       where: { Deleted: "1" },
     });
     const percentageOrganisationByName = await prPerformance.findAll({
-      attributes: ['DPSU', [sequelize.fn('COUNT', 'DPSU'), 'countDPSU'], 'VOP',[sequelize.fn('sum', sequelize.col('VOP')), 'SumofVOP'],[sequelize.fn('AVG', sequelize.cast(sequelize.col('VOP'), 'integer')), 'avgVop'] ],
-      group: ['DPSU','VOP'],
+      attributes: [
+        "OrganisationID",
+        [sequelize.fn("COUNT", "OrganisationID"), "countOrganisation"],
+        [sequelize.fn("sum", sequelize.col("VOP")), "SumofVOP"],
+        [
+          sequelize.fn("AVG", sequelize.cast(sequelize.col("VOP"), "integer")),
+          "avgVop",
+        ],
+      ],
+      group: ["OrganisationID"],
       where: { Deleted: "1" },
       include: [
         {
           model: Organisation,
           as: "OrganisationName",
-          attributes: ["Code","Name" ],
-        right: true,
-        where: {
-          Deleted: "1"  
-        }
+          attributes: ["Code", "Name"],
+          right: true,
+          where: {
+            Deleted: "1",
+          },
         },
 
         {
@@ -314,7 +343,6 @@ const pieChartOrganisation = async (req, res) => {
           as: "Year",
         },
       ],
-      
     });
 
     // console.log(percentageOrganisationByName.data,"percentageOrganisationByName%^$^$^$^#$%#")
@@ -390,7 +418,7 @@ module.exports = {
   updateprPerformanceById,
   deletePrProd,
   // countOrganisation,
- // OrgTypePrPercentage,
+  // OrgTypePrPercentage,
   pieChartOrganisation,
- // organisationCount,
+  // organisationCount,
 };
