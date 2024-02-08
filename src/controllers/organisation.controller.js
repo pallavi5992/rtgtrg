@@ -26,7 +26,7 @@ const getAllOrganisationData = async (req, res) => {
   const data = [];
   const resultData = await Organisation.findAll({
     where: {
-      Deleted: "0",
+      Deleted: "1",
     },
     attributes: ["OrganisationID", "Code", "Name", "PublicSector"],
   });

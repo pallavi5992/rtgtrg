@@ -6,11 +6,16 @@ const captchaRoute=require("./captcha.route")
 const accessRoute =require("./accessassignment.route")
 const moduleRoute = require("./module.route")
 const organisationRoute = require("./organistion.route");
-const yearRoute = require("./year.route")
-const productionPerformanceRoute = require("./productionPerformance.route")
 const moduleConfigRoute=require("./moduleConfig.route")
 
-
+const yearRoute = require("./year.route")
+const productionPerformanceRoute = require("./productionPerformance.route")
+const orderBookPosition=require("./orderBookPosition.route")
+const profitability = require("./profitability.route")
+const indigenization = require("./indigenization.route")
+const newproject = require("./newproject.route")
+const modernisationcapex =require("./modernisationcapex.route")
+const exportperformance = require("./exportperformance.route")
 const router=express.Router();
 
 const defaultRoutes=[
@@ -49,6 +54,31 @@ const defaultRoutes=[
     {
         path:"/productionPerformance",
         route:productionPerformanceRoute
+    },
+    {
+        path:"/orderBookPosition",
+        route:orderBookPosition
+    },
+    {
+        path:"/profitability",
+        route:profitability
+    },
+    {
+        path:"/indigenization",
+        route:indigenization
+    },
+    {
+        path:"/newproject",
+        route:newproject
+    },
+    {
+        path:"/modernisationcapex",
+        route:modernisationcapex
+
+    }, {
+        path:"/exportperformance",
+        route:exportperformance
+
     },
     {
         path:"/module-config",

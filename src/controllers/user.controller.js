@@ -51,9 +51,6 @@ const addUser = async (req, res) => {
 
 const getAllUserData = async (req, res) => {
   const userData = [];
-
-  
-
   const users = await User.findAll({
     where: {
       Deleted: "1",
@@ -69,7 +66,6 @@ const getAllUserData = async (req, res) => {
       "personalNumber",
     ],
   });
-
   for (let i = 0; i < users.length; i++) {
     if (users[i].UserId != req.userId) {
       userData.push({
@@ -85,7 +81,6 @@ const getAllUserData = async (req, res) => {
       });
     }
   }
-
   const page = parseInt(req.query.page) || 0;
   const limit = req.query.limit || 10;
   const startIndex = page * limit;

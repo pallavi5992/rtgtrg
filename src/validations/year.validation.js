@@ -1,5 +1,5 @@
 const db = require("../models");
-const Organisation = db.tblYear;
+const tblYear = db.tblYear;
 const addFy = async (req, res, next) => {
   try {
     const { Year } = req.body;
@@ -8,7 +8,17 @@ const addFy = async (req, res, next) => {
         .status(400)
         .send({ status: false, message: "Please Enter Valid Financial Year" });
     } 
-
+    
+    const isYearExist = await tblYear.findOne({
+      where: {
+        Year: Year,
+      },
+    });
+    if (isYearExist) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Year address already exist!" });
+    }
     next();
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });

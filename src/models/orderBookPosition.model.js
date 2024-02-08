@@ -1,26 +1,27 @@
 module.exports = (sequelize, Sequelize, DataTypes) => {
-  const orderBook = sequelize.define("ddpdashboard_orderbook", {
+  const orderBook = sequelize.define("ddpdashboard_orderbookposition", {
     OrderBookID: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    DPSU: {
+    OrganisationID: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    OrderBookFrom: {
+    NoOfOrderBookFrom: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    OrderBookTo: {
-        type: Sequelize.INTEGER,
+    NoOfOrderBookTo: { 
+        type:Sequelize.INTEGER,
         allowNull: false,
     },
-    Month: {
-        type: Sequelize.INTEGER,
+    SelectedMonth: {
+        type: DataTypes.STRING,
         allowNull: false,
-      },
+        
+    },
     Remarks: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -33,6 +34,20 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     ModifiedBy: {
       type: DataTypes.INTEGER,
       allowNull: true,
+    },
+  },
+  {
+    // Define additional options for your model (optional)
+    timestamps: true, // Add timestamps (createdAt, updatedAt) to your model (optional)
+    getterMethods: {
+      type: DataTypes.VIRTUAL,
+      formattedSelectedMonth() {
+        // Convert the selectedMonth string to a Date object
+        const dateObject = new Date(this.getDataValue('SelectedMonth'));
+  
+        // Format the Date object to display "Month Year"
+        return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(dateObject);
+      },
     },
   });
   return orderBook;

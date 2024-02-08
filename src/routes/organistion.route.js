@@ -5,7 +5,8 @@ const auth=require("../middleware/auth/auth")
 const router=express.Router();
 
 router.post("/add-organisation",[auth.verifyToken],validation.addorganisation,controller.addorganisation);
-router.get("/getAll-organisation",[auth.verifyToken],controller.getAllOrganisationData);
+//router.get("/getAll-organisation",[auth.verifyToken],controller.getAllOrganisationData);
+router.get("/getAll-organisation",controller.getAllOrganisationData);
 router.get("/get-organisation/:OrganisationID",[auth.verifyToken], controller.getByIdOrganisationData);
 router.put('/Update-organisation/:OrganisationID',[auth.verifyToken], controller.updateOrganisationData);
 router.delete('/delete-organisation/:OrganisationID',[auth.verifyToken], controller.deleteOrganisation);

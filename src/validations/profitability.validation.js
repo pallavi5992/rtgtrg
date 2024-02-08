@@ -1,15 +1,15 @@
 const db = require("../models");
-const prProduction = db.prProduction;
+const profitability = db.profitability;
 const FyYear = db.tblYear
 const Organisation= db.organisation
 
-const checkIfProdExists = async (organisationID, YearID, quarter) => {
+const checkIfProfitExists = async (OrganisationID,FyYearID, Quarter) => {
   try {
-    const existingRecord = await prProduction.findOne({
+    const existingRecord = await profitability.findOne({
       where: {
-        OrganisationID: organisationID,
-        YearID: YearID,
-        Quarter: quarter,
+        OrganisationID: OrganisationID,
+        YearID: FyYearID,
+        Quarter: Quarter,
       },
     });
 
@@ -19,24 +19,43 @@ const checkIfProdExists = async (organisationID, YearID, quarter) => {
     return false;
   }
 };
-const addprPerformance = async (req, res, next) => {
+
+// const getPreviousFinancialYear = async (selectedYear)=> {
+//     console.log(selectedYear,"selectedYear*&*&")
+//     const FyYearExist = await FyYear.findOne({
+//         where: {
+//             YearID : selectedYear,
+//         },
+//       });
+      
+//     // Extract the year portion from the selected year string
+//     const selectedYearParts = FyYearExist.Year.split('-');
+//     const selectedStartYear = parseInt(selectedYearParts[0]);
+    
+//     // Calculate the previous financial year
+//     const previousYear = selectedStartYear - 1;
+//     const previousFinancialYear = `${previousYear}-${selectedStartYear}`;
+  
+//     return previousFinancialYear;
+//   }
+const addprofitabilityData = async (req, res, next) => {
   try {
-    const { OrganisationID, VOP, YearID, Quarter, Remarks } = req.body;
+    const { OrganisationID, Amount, FyYearID, Quarter, Remarks } = req.body;
     if (!OrganisationID) {
       return res
         .status(400)
         .send({ status: false, message: "Please select organisation" });
-    } else if (!VOP) {
+    } else if (!Amount) {
       return res.status(400).send({
         status: false,
-        message: "Please Enter Value Of Production!",
+        message: "Please Enter Value Of Amount!",
       });
-    } else if (!YearID) {
+    } else if (!FyYearID) {
       return res.status(400).send({
         status: false,
-        message: "Please select data year!",
+        message: "Please select FY year!",
       });
-    } else if (!Quarter) {
+    }  else if (!Quarter) {
       return res.status(400).send({
         status: false,
         message: "Please select Quarter!",
@@ -59,7 +78,7 @@ const addprPerformance = async (req, res, next) => {
       }
     const FyYearExist = await FyYear.findOne({
         where: {
-            YearID : YearID,
+            YearID : FyYearID,
         },
       });
       if (!FyYearExist) {
@@ -76,13 +95,19 @@ const addprPerformance = async (req, res, next) => {
         .send({ status: false, message: "Invalid Quarter" });
       }
   
-      const recordExists = await checkIfProdExists(OrganisationID, YearID, Quarter);
+      const recordExists = await checkIfProfitExists(OrganisationID,FyYearID, Quarter);
       if (recordExists) {
         return res
         .status(400)
         .send({ status: false, message: "Record already exists." });
       } 
 
+        // const validPreviousFyYear = await getPreviousFinancialYear(FyYearID)
+        // if (!validPreviousFyYear) {
+        //     return res
+        //     .status(400)
+        //     .send({ status: false, message: "Invalid Previous FY." });
+        //   } 
         next();
 
         
@@ -92,17 +117,17 @@ const addprPerformance = async (req, res, next) => {
 };
 
 
-const updateprPerformance = async (req,res,next)=>{
+const updateprofitabilityData = async (req,res,next)=>{
 try{
-  const { OrganisationID, VOP,YearID, Quarter, Remarks } = req.body;
+  const { OrganisationID,Amount, YearID, Quarter, Remarks } = req.body;
   if (!OrganisationID) {
     return res
       .status(400)
       .send({ status: false, message: "Please select organisation" });
-  } else if (!VOP) {
+  } else if (!Amount) {
     return res.status(400).send({
       status: false,
-      message: "Please Enter Value Of Production!",
+      message: "Please Enter Value Of Profitability!",
     });
   } else if (!YearID) {
     return res.status(400).send({
@@ -149,7 +174,7 @@ try{
       .send({ status: false, message: "Invalid Quarter" });
     }
 
-    const recordExists = await checkIfProdExists(OrganisationID, YearID, Quarter);
+    const recordExists = await checkIfProfitExists(OrganisationID, YearID, Quarter);
     if (recordExists) {
       return res
       .status(400)
@@ -162,6 +187,6 @@ try{
 }
 }
 module.exports = {
-  addprPerformance,
-  updateprPerformance
+ addprofitabilityData,
+ updateprofitabilityData
 };

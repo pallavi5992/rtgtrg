@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    DPSU: {
+    OrganisationID: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },

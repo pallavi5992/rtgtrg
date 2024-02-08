@@ -7,13 +7,27 @@ const Organisation = db.organisation;
 const prPerformance = db.prProduction;
 const Year = db.tblYear;
 const pagination = require("../helper/pagination");
+db.prProduction.belongsTo(db.tblYear, {
+  foreignKey: "YearID",
+  as: "Year",
+});
 
+db.prProduction.belongsTo(db.organisation, {
+  foreignKey: "OrganisationID",
+  as: "OrganisationName",
+});
+
+db.organisation.belongsTo(db.prProduction, {
+  foreignKey: "OrganisationID",
+  as: "OrgName",
+});
 const addprPerformanceData = async (req, res) => {
   try {
     const token = req.headers["x-access-token"];
     const decodeToken = jwt.decode(token);
     const userId = decodeToken.id;
     const { OrganisationID, VOP, YearID, Quarter, Remarks } = req.body;
+    
     await prPerformance.create({
       OrganisationID: OrganisationID,
       VOP: VOP,
@@ -139,26 +153,26 @@ const updateprPerformanceById = async (req, res) => {
     const decodeToken = jwt.decode(token);
     const userId = decodeToken.id;
     const { ProductionID } = req.params;
-    const { OrganisationID, VOP, Quarter, Remarks } = req.body;
-    if (!ProductionID) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter ProductionID" });
-    }
-    const prProd = await prPerformance.findOne({
-      where: {
-        ProductionID: ProductionID,
-      },
-    });
-    if (!prProd) {
-      return res.status(404).send({
-        status: false,
-        message: `Data ${ProductionID} not found`,
-      });
-    }
+    const { OrganisationID, VOP,YearID, Quarter, Remarks } = req.body;
+    // if (!ProductionID) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Please enter ProductionID" });
+    // }
+    // const prProd = await prPerformance.findOne({
+    //   where: {
+    //     ProductionID: ProductionID,
+    //   },
+    // });
+    // if (!prProd) {
+    //   return res.status(404).send({
+    //     status: false,
+    //     message: `Data ${ProductionID} not found`,
+    //   });
+    // }
 
     await prPerformance.update(
-      { OrganisationID, VOP, Quarter, Remarks, ModifiedBy:userId },
+      { OrganisationID, VOP,YearID, Quarter, Remarks, ModifiedBy:userId },
       { where: { ProductionID } }
     );
 
@@ -310,7 +324,14 @@ const deletePrProd = async (req, res) => {
  */
 const pieChartOrganisation = async (req, res) => {
   try {
-    const countorg = await Organisation.count({
+    const totalOrgCount = await Organisation.count({
+      where: { Deleted: "1" },
+    });
+   
+    let totalVop = await prPerformance.findAll({
+      attributes: [
+        [sequelize.fn("SUM", sequelize.cast(sequelize.col("VOP"), 'integer')), "totalVopAmount"], 
+      ],
       where: { Deleted: "1" },
     });
     const percentageOrganisationByName = await prPerformance.findAll({
@@ -353,7 +374,8 @@ const pieChartOrganisation = async (req, res) => {
     return res.status(200).json({
       status: true,
       message: `Organisation Percentage Found`,
-      data: percentageOrganisationByName,
+     data:{totalOrgCount,totalVop,percentageOrganisationByName},
+      //data:  { totalOrgCount,percentageOrganisationByName }
     });
   } catch (error) {
     res.status(500).json({
