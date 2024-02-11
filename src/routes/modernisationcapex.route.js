@@ -4,13 +4,9 @@ const validation =require("../validations/modernisationcapex.validation.js")
 const auth=require("../middleware/auth/auth.js")
 const router=express.Router();
 
-// router.post("/add-orderBookPositionData",[auth.verifyToken],validation.addOrderBookPosition,controller.orderBookPositionData);
-// router.get("/getAll-orderBookPositionData",[auth.verifyToken],controller.getAllOrderBookPositionData);
-// router.get("/get-orderBookPositionDataById/:OrderBookID",[auth.verifyToken],controller.orderBookPositionDataById);
-// router.put("/update-orderBookById/:OrderBookID",[auth.verifyToken],controller.updateOrderBookPositionDataById);
-// router.put("/delete-orderBookById/:OrderBookID",[auth.verifyToken],controller.deleteOrderBookById);
+router.post("/add-modernisationcapexData",[auth.verifyToken],validation.addmodernisationcapexData,controller.modernisationcapexData);
+router.get("/getAll-modernisationcapexData",[auth.verifyToken],controller.getAllmodernisationcapexData);
 
-// router.get("/percentage-org",controller.pieChartOrganisation);
 
 
 module.exports=router;
